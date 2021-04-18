@@ -1,0 +1,20 @@
+
+  <mat-card class="main">
+
+    <ul id="changes-graph">
+      <li *ngFor="let item of this.commits">{{item.text}}</li>
+
+    </ul>
+    <div class="comments"></div>
+
+
+  </mat-card>
+  <mat-card class="btns">
+
+
+    <input type="text" [(ngModel)]="newCommit.text" placeholder="text commit">
+    <input type="text" [(ngModel)]="newCommit.parent" placeholder="parent">
+    <input type="text" [(ngModel)]="newCommit.mergeTo" placeholder="parent">
+    <button (click)="add()">Добавить</button>
+  </mat-card>
+

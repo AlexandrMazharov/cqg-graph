@@ -1,0 +1,15 @@
+ul{ margin-left: 100px}
+li{ line-height: 32px;
+margin-left: 400px}
+.comments{
+
+}
+
+
+
+.btns{
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  width: 100px;
+}
