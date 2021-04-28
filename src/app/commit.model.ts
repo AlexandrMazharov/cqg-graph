@@ -1,18 +1,18 @@
 import {Deserializable} from './Deserializable';
 
 export class Commit implements Deserializable {
-  id: number;
+  id: string;
   text: string;
   time: string;
   previous: [];
-  children: number;
-  parent: number;
-  mergeTo: number;
+  children: string;
+  parent: string;
+  parent2: string; //mergeTo: number;
+  mergeFrom: string;
 
 
   constructor() {
   }
-
 
 
   deserialize(input: any): any {

@@ -18,7 +18,6 @@ export class CommitService {
   }
 
   sendCommit(commit: Commit): Observable<any> {
-    console.log(commit);
     return this.httpClient.post(commitURL, commit);
   }
 

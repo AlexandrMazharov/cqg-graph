@@ -3,6 +3,7 @@ import {ChangesGraph} from './graph';
 import {CommitService} from './commit.service';
 import {Commit} from './commit.model';
 import {log} from 'util';
+import {FormControl} from '@angular/forms';
 
 
 @Component({
@@ -18,7 +19,7 @@ export class AppComponent implements OnInit {
   parent2: number;
   public commits = null;
   public newCommit: Commit;
-
+public  allId = [];
   constructor(private commitService: CommitService) {
 
 
@@ -31,6 +32,7 @@ export class AppComponent implements OnInit {
       this.commits = res;
       console.log(res);
 
+      res.forEach(item => this.allId.push(item.id));
       this.changesGraph = new ChangesGraph(
         res,
         document.getElementById('changes-graph')
@@ -40,10 +42,12 @@ export class AppComponent implements OnInit {
   }
 
   add(): void {
-
+    // if ( !this.newCommit.parent) { this.newCommit.parent = ''; }
     this.newCommit.time = new Date().toISOString();
     this.newCommit.id = this.commits.length + 1;
-    this.commitService.sendCommit(this.newCommit).subscribe(r => console.log(r));
+    this.commitService.sendCommit(this.newCommit).subscribe(r => {
+      this.ngOnInit();
+    });
     console.log(this.newCommit);
   }
 
