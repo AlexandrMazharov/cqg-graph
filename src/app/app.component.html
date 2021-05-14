@@ -1,8 +1,7 @@
 <mat-card class="main">
 
   <ul id="changes-graph">
-    <li *ngFor="let item of this.commits">{{item.text}}</li>
-
+    <li *ngFor="let item of this.commits">{{item.text}} | {{item.id}}</li>
   </ul>
   <div class="comments"></div>
 
@@ -25,8 +24,34 @@
   </mat-form-field>
 
 
-  <input type="text" [(ngModel)]="newCommit.parent" placeholder="parent">
-  <input type="text" [(ngModel)]="newCommit.parent2" placeholder="parent">
+
+
+
+  <hr>
+  <!--  merge-->
+  <button mat-button (click)="merge()">Merge</button>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Merge commit</mat-label>
+    <input matInput [(ngModel)]="newCommit.text">
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Choose parent</mat-label>
+    <mat-select [(ngModel)]="newCommit.parent2">
+      <mat-option *ngFor="let parent of allId"  [value]="parent">  {{parent}}
+      </mat-option>
+
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Choose parent</mat-label>
+    <mat-select [(ngModel)]="newCommit.parent">
+      <mat-option *ngFor="let parent of allId"  [value]="parent">  {{parent}}
+      </mat-option>
+
+    </mat-select>
+  </mat-form-field>
+
 
 </mat-card>
 

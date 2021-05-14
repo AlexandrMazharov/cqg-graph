@@ -4,7 +4,7 @@ ul {
 
 li {
   line-height: 32px;
-  margin-left: 400px
+  margin-left: 250px
 }
 
 .comments {
@@ -15,4 +15,7 @@ li {
 .btns {
   background: #fafafa;
 
+}
+.merge{
+  border: 1px;
 }

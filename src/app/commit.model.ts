@@ -7,7 +7,7 @@ export class Commit implements Deserializable {
   previous: [];
   children: string;
   parent: string;
-  parent2: string; //mergeTo: number;
+  parent2: string; // mergeTo: number;
   mergeFrom: string;
 
 

@@ -24,7 +24,7 @@ export class CommitService {
   getCommits(): Observable<any> {
     return this.httpClient.get<Commit[]>(commitURL)
       .pipe(map(res => {
-        console.log(res);
+        // console.log(res);
         const commits = [];
         res.forEach(i => commits.push(new Commit().deserialize(i)));
         return commits;

@@ -14,12 +14,11 @@ import {FormControl} from '@angular/forms';
 export class AppComponent implements OnInit {
   title = 'cqg-graph';
   private changesGraph: ChangesGraph;
-  textCommit: any;
-  parent1: number;
-  parent2: number;
   public commits = null;
   public newCommit: Commit;
 public  allId = [];
+  mergeFrom: any;
+  mergeTo: any;
   constructor(private commitService: CommitService) {
 
 
@@ -30,7 +29,7 @@ public  allId = [];
 
     this.commitService.getCommits().subscribe(res => {
       this.commits = res;
-      console.log(res);
+      // console.log(res);
 
       res.forEach(item => this.allId.push(item.id));
       this.changesGraph = new ChangesGraph(
@@ -42,7 +41,7 @@ public  allId = [];
   }
 
   add(): void {
-    // if ( !this.newCommit.parent) { this.newCommit.parent = ''; }
+
     this.newCommit.time = new Date().toISOString();
     this.newCommit.id = this.commits.length + 1;
     this.commitService.sendCommit(this.newCommit).subscribe(r => {
@@ -51,4 +50,12 @@ public  allId = [];
     console.log(this.newCommit);
   }
 
+  merge() {
+    this.newCommit.time = new Date().toISOString();
+    this.newCommit.id = this.commits.length + 1;
+    this.commitService.sendCommit(this.newCommit).subscribe(r => {
+      this.ngOnInit();
+    });
+    console.log(this.newCommit);
+  }
 }

@@ -1,6 +1,5 @@
 import {Commit} from './commit.model';
-import {takeLast} from 'rxjs/operators';
-
+import {GraphItem} from './graph-item.model';
 
 export class ChangesGraph {
   private cellHeight: any;
@@ -17,7 +16,7 @@ export class ChangesGraph {
 
     this.element.style.position = 'relative';
     this.element.style.padding = '0px';
-
+    console.log(commits);
     this.calcChildrenCount();
 
     const wrapper = document.createElement('div');
@@ -43,13 +42,11 @@ export class ChangesGraph {
         const children = this.commits[Number(parent) - 1].children;
         this.commits[Number(parent) - 1].children = String(Number(children) + 1);
 
-
       }
       // это добавил
       if (parent2) {
-        const children = this.commits[parent2].children;
-        this.commits[parent2].mergeFrom = item.id;
-
+        const children = this.commits[Number(parent2) - 1].children;
+        this.commits[Number(parent2) - 1].children = String(Number(children) + 1);
       }
 
     }
@@ -63,67 +60,75 @@ export class ChangesGraph {
     // index  - номер строки
 
     for (let index = 0; index < items.length; index++) {
-
       const item = items[index];
-
       const row = [];
       if (table.length) {
-        const last = table[table.length - 1];
-        for (let i = 0; i < last.length; i++) {
-          const node = last[i];
-          if (node.children === 0) {
-            row.push({
-              id: node.id,
-              type: 'P',
-              children: 0,
-              parentColumn: i
-            });
-          } else if (node.children === 1) {
-            row.push({
-              id: node.id,
-              type: 'L',
-              children: 1,
-              parentColumn: i
-            });
-          } else if (node.children > 1) {
-            row.push({
-              id: node.id,
-              type: 'L',
-              children: 1,
-              parentColumn: i
-            });
+        const lastRow = table[table.length - 1];
+        for (let i = 0; i < lastRow.length; i++) {
+          const node = lastRow[i];
 
-            row.push({
-              id: node.id,
-              type: 'L',
-              children: node.children - 1,
-              parentColumn: i
-            });
+          if (node.children === 0) {
+            row.push(new GraphItem(node.id, 'P', 0, i, i, null));
+          } else if (node.children === 1) {
+
+            row.push(new GraphItem(node.id, 'L', 1, i, i, null));
+
+          } else if (node.children > 1) {
+            row.push(new GraphItem(node.id, 'L', 1, i, i, null));
+            row.push(new GraphItem(node.id, 'L', node.children - 1, i, i, null));
           }
         }
       }
+
       let found = false;
 
       for (let i = 0; i < row.length; i++) { // по строке
         const node = row[i];
         if (node.id === item.parent) {
+
+
+          //////////// это магия работает как то. хз
+//           if (this.commits[index].parent2) {
+//
+//               console.log(row[i - 1]);
+//               row[i - 1].finishColumn++;
+//               if (row[i - 1].children > 0) {
+//                 row[i - 1].children--;
+//
+//             }
+//               ///////////////
+//             // console.log(this.commits[index]);
+// // 9 должен мержиться в 10
+//
+//           }
+
           node.id = item.id;
           node.type = 'O';
           node.children = Number(item.children);
-
+          node.parent2 = Number(item.parent2);
           found = true;
           break;
         }
+
       }
 
-      // рисуем родителя всех
-      if (!found) {
-        row.push({
-          id: item.id,
-          type: 'O',
-          children: Number(item.children),
-          parentColumn: null
-        });
+
+      if (!found) {      // рисуем родителя всех
+        // console.log(item);
+        row.push(new GraphItem(item.id, 'O', Number(item.children), null, null, Number(item.parent2)));
+      }
+      for (let i = 0; i < row.length; i++) {
+
+        if (row[i - 1]  ) {
+          if (row[i - 1].parent2 &&  this.commits[row[i].id - 1].id) {
+            console.log(row[i - 1].parent2, this.commits[row[i].id - 1].id);
+            row[i].finishColumn--;
+            row[i].children--;
+            console.log(row[i]);
+          }
+        }
+
+
       }
       table.push(row);
     }
@@ -161,12 +166,16 @@ export class ChangesGraph {
           y: (i + 0.5) * this.cellHeight
         };
 
-        if (table[i][j].parentColumn != null && table[i][j].type !== 'P') {
+        if (table[i][j].startColumn != null && table[i][j].type !== 'P') {
 
-          const x1 = table[i][j].parentColumn * this.cellWidth + this.cellWidth / 2;
+          const x1 = table[i][j].startColumn * this.cellWidth + this.cellWidth / 2;
           const y1 = cell.y - this.cellHeight;
-          const x2 = cell.x;
+          let x2 = cell.x;
           const y2 = cell.y;
+          if (table[i][j].startColumn !== table[i][j].finishColumn) {
+            // console.log(table[i][j]);
+            x2 = table[i][j].finishColumn * this.cellWidth + this.cellWidth / 2;
+          }
 
           const link = this.makeSVGElement('line', {
             x1, y1, x2, y2,
@@ -184,7 +193,6 @@ export class ChangesGraph {
     for (let i = 0; i < table.length; i++) {
       for (let j = 0; j < table[i].length; j++) {
         if (table[i][j].type === 'O') {
-
 
           const node = this.makeSVGElement('circle', {
             cx: (j + 0.5) * this.cellWidth,
