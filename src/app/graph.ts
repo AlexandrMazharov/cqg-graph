@@ -68,7 +68,10 @@ export class ChangesGraph {
           const node = lastRow[i];
 
           if (node.children === 0) {
-            row.push(new GraphItem(node.id, 'P', 0, i, i, null));
+            // console.log(node);
+            if (node.type === 'O') {
+              row.push(new GraphItem(node.id, 'P', 0, i, i, null));
+            }
           } else if (node.children === 1) {
 
             row.push(new GraphItem(node.id, 'L', 1, i, i, null));
@@ -119,17 +122,39 @@ export class ChangesGraph {
       }
       for (let i = 0; i < row.length; i++) {
 
-        if (row[i - 1]  ) {
-          if (row[i - 1].parent2 &&  this.commits[row[i].id - 1].id) {
-            console.log(row[i - 1].parent2, this.commits[row[i].id - 1].id);
-            row[i].finishColumn--;
-            row[i].children--;
-            console.log(row[i]);
+        if (row[i - 1]) {
+          if (row[i - 1].parent2 && this.commits[row[i].id - 1].id) {
+            // console.log(row[i - 1].parent2, this.commits[row[i].id - 1].id);
+            if (row[i].finishColumn > 0) {
+              row[i].finishColumn--;
+            }
+            if (row[i].children > 0) {
+              row[i].children--;
+            }
+            // console.log(row[i]);
           }
+
+          //
+          //   if (row[i - 1].parent2 &&  this.commits[row[i].id - 1].id) {
+          // if (row[i - 1].parent2, this.commits[row[i - 1].id - 1].parent2) {
+          //   if (row[i - 1].parent2) {
+          console.log(row[i], row[i - 1], this.commits[row[i].id ]);
+          // console.log(row[i - 1],this.commits[row[i - 1].id - 1] );
+          // row[i - 2].finishColumn++;
+          // row[i - 2].children--;
+
+
+          //   }
+          // }
+          // row[i].finishColumn--;
+          // row[i].children--;
+          // console.log(row[i]);
         }
 
 
       }
+
+
       table.push(row);
     }
 
