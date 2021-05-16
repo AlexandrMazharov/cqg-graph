@@ -1,11 +1,5 @@
-<mat-card class="main">
+<app-svg-graph *ngIf="commits" [UpdateCommits]="commits" > </app-svg-graph>
 
-  <ul id="changes-graph">
-    <li *ngFor="let item of this.commits">{{item.text}} | {{item.id}}</li>
-  </ul>
-  <div class="comments"></div>
-
-</mat-card>
 <mat-card class="btns">
 
   <button mat-button (click)="add()">Add commit</button>
@@ -15,7 +9,7 @@
     <input matInput [(ngModel)]="newCommit.text">
   </mat-form-field>
   <mat-form-field appearance="fill">
-    <mat-label>Choose parent</mat-label>
+    <mat-label>CURRENT COMMIT</mat-label>
     <mat-select [(ngModel)]="newCommit.parent">
       <mat-option *ngFor="let parent of allId"  [value]="parent">  {{parent}}
       </mat-option>
@@ -32,25 +26,14 @@
   <button mat-button (click)="merge()">Merge</button>
 
   <mat-form-field appearance="fill">
-    <mat-label>Merge commit</mat-label>
-    <input matInput [(ngModel)]="newCommit.text">
-  </mat-form-field>
-  <mat-form-field appearance="fill">
-    <mat-label>Choose parent</mat-label>
+    <mat-label>Merge FROM</mat-label>
     <mat-select [(ngModel)]="newCommit.parent2">
       <mat-option *ngFor="let parent of allId"  [value]="parent">  {{parent}}
       </mat-option>
 
     </mat-select>
   </mat-form-field>
-  <mat-form-field appearance="fill">
-    <mat-label>Choose parent</mat-label>
-    <mat-select [(ngModel)]="newCommit.parent">
-      <mat-option *ngFor="let parent of allId"  [value]="parent">  {{parent}}
-      </mat-option>
 
-    </mat-select>
-  </mat-form-field>
 
 
 </mat-card>

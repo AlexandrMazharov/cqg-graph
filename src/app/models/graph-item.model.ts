@@ -1,14 +1,14 @@
 export class GraphItem {
   // элемент графа. Бывает трех типов
-  // P -пусто
+  // NULL -пусто
   // L - line
   // O - object те узел
   public id: string;
- public  type: string;
- public  children: number;
- public  startColumn: number;
- public  finishColumn: number;
-public parent2: number;
+  public type: string;
+  public children: number;
+  public startColumn: number;
+  public finishColumn: number;
+  public mergeFrom: number;
 
   constructor(id: string, type: string, children: number, startColumn: number, finishColumn: number, mergeFrom: number) {
     this.id = id;
@@ -16,7 +16,7 @@ public parent2: number;
     this.children = children;
     this.startColumn = startColumn;
     this.finishColumn = finishColumn;
-    this.parent2 = mergeFrom;
+    this.mergeFrom = mergeFrom;
 
   }
 }

@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 
-import {Commit} from './commit.model';
+import {Commit} from '../models/commit.model';
 import {map} from 'rxjs/operators';
 
 const commitURL = 'http://localhost:3000/commits';

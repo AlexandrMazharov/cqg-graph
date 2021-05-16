@@ -1,9 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {ChangesGraph} from './graph';
-import {CommitService} from './commit.service';
-import {Commit} from './commit.model';
-import {log} from 'util';
-import {FormControl} from '@angular/forms';
+
+import {CommitService} from './services/commit.service';
+import {Commit} from './models/commit.model';
 
 
 @Component({
@@ -13,12 +11,11 @@ import {FormControl} from '@angular/forms';
 })
 export class AppComponent implements OnInit {
   title = 'cqg-graph';
-  private changesGraph: ChangesGraph;
+
   public commits = null;
   public newCommit: Commit;
-public  allId = [];
-  mergeFrom: any;
-  mergeTo: any;
+  public allId = [];
+
   constructor(private commitService: CommitService) {
 
 
@@ -26,18 +23,18 @@ public  allId = [];
 
   ngOnInit(): void {
 
+    this.getCommits();
 
+  }
+
+  getCommits(): void {
     this.commitService.getCommits().subscribe(res => {
       this.commits = res;
-      // console.log(res);
 
       res.forEach(item => this.allId.push(item.id));
-      this.changesGraph = new ChangesGraph(
-        res,
-        document.getElementById('changes-graph')
-      );
     });
     this.newCommit = new Commit();
+
   }
 
   add(): void {
@@ -45,17 +42,15 @@ public  allId = [];
     this.newCommit.time = new Date().toISOString();
     this.newCommit.id = this.commits.length + 1;
     this.commitService.sendCommit(this.newCommit).subscribe(r => {
-      this.ngOnInit();
+      this.getCommits();
     });
-    console.log(this.newCommit);
   }
 
-  merge() {
+  merge(): void {
     this.newCommit.time = new Date().toISOString();
     this.newCommit.id = this.commits.length + 1;
     this.commitService.sendCommit(this.newCommit).subscribe(r => {
-      this.ngOnInit();
+      this.getCommits();
     });
-    console.log(this.newCommit);
   }
 }

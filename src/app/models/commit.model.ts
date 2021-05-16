@@ -4,11 +4,9 @@ export class Commit implements Deserializable {
   id: string;
   text: string;
   time: string;
-  previous: [];
   children: string;
   parent: string;
-  parent2: string; // mergeTo: number;
-  mergeFrom: string;
+  parent2: string;
 
 
   constructor() {
