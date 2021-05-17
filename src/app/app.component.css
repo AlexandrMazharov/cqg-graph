@@ -1,9 +1,34 @@
 
-
-.btns {
+.app{
+  display: flex;
+  justify-content: space-between;
+  margin: 0 auto;
+  width: 1200px;
   background: #fafafa;
+  padding: 12px;
+  height: calc(100vh - 24px);
+}
+.graph{
 
 }
-.merge{
-  border: 1px;
+.controls{
+
+}
+.controls-section{
+
+}
+.controls-section{}
+.controls-section--border-top{
+   padding-top: 12px;
+   border-top: 1px solid black;
+ }
+
+.controls-line{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.full-width{
+  width: 100%;
 }

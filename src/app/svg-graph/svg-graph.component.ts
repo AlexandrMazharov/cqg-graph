@@ -1,33 +1,68 @@
-import {Commit} from './commit.model';
-import {GraphItem} from './graph-item.model';
+import {Component, Input, OnInit} from '@angular/core';
+import {Commit} from '../models/commit.model';
+import {GraphItem} from '../models/graph-item.model';
+import {Tag} from '../models/tag.model';
+import {log} from 'util';
 
-export class ChangesGraph {
-  private cellHeight: any;
-  private cellWidth: any;
-  private element: HTMLElement;
-  private commits: Commit[];
+@Component({
+  selector: 'app-svg-graph',
+  templateUrl: './svg-graph.component.html',
+  styleUrls: ['./svg-graph.component.css']
+})
+export class SvgGraphComponent {
 
-  constructor(commits, element: HTMLElement) {
-    this.commits = commits;
-    this.element = element;
+  tags = new Map<string, string>();
+  public commits: Commit[];
 
-    this.cellWidth = 32; // width ? width : 32;
-    this.cellHeight = 32; // height ? height : 32;
+  @Input()
+  set inputTags(tags: Tag[]) {
+    tags.forEach(tag => this.tags.set(tag.commit, tag.tag));
+    console.log(this.tags);
 
-    this.element.style.position = 'relative';
-    this.element.style.padding = '0px';
-    console.log(commits);
-    this.calcChildrenCount();
-
-    const wrapper = document.createElement('div');
-    wrapper.style.position = 'absolute';
-    this.element.insertBefore(wrapper, this.element.firstChild);
-
-    const svg = this.buildSVG(this.getViewTable());
-    wrapper.appendChild(svg);
 
   }
 
+  @Input()
+  set inputCommits(commits: Commit[]) {
+    if (this.commits !== commits) {
+      this.commits = commits;
+      this.rerender();
+    }
+
+  }
+
+  private cellHeight: any;
+  private cellWidth: any;
+  private element: HTMLElement;
+
+  constructor() {
+    this.cellWidth = 32;
+    this.cellHeight = 32;
+  }
+
+  viewTag() {
+    console.log('viewTag');
+  }
+
+  rerender(): void {
+    this.element = document.getElementById('changes-graph');
+    this.element.style.position = 'relative';
+    this.element.style.padding = '0px';
+
+    this.calcChildrenCount();
+    const wrapper = document.createElement('div');
+    wrapper.style.position = 'absolute';
+    this.element.insertBefore(wrapper, this.element.firstChild);
+    const svg = this.buildSVG(this.getViewTable());
+    wrapper.appendChild(svg);
+    const nodes = Array.from(document.querySelectorAll('svg .node'));
+    nodes.forEach((el) => el.addEventListener('click', this.start));
+  }
+
+  start(e): void {
+    console.log(e.target.id);
+    // just an example
+  }
 
   calcChildrenCount(): void {
     const items = this.commits;
@@ -41,9 +76,7 @@ export class ChangesGraph {
       if (parent) {
         const children = this.commits[Number(parent) - 1].children;
         this.commits[Number(parent) - 1].children = String(Number(children) + 1);
-
       }
-      // это добавил
       if (parent2) {
         const children = this.commits[Number(parent2) - 1].children;
         this.commits[Number(parent2) - 1].children = String(Number(children) + 1);
@@ -52,12 +85,10 @@ export class ChangesGraph {
     }
   }
 
-
   getViewTable(): object {
     const items = this.commits;
 
     const table = [];
-    // index  - номер строки
 
     for (let index = 0; index < items.length; index++) {
       const item = items[index];
@@ -66,16 +97,10 @@ export class ChangesGraph {
         const lastRow = table[table.length - 1];
         for (let i = 0; i < lastRow.length; i++) {
           const node = lastRow[i];
-
           if (node.children === 0) {
-            // console.log(node);
-            if (node.type === 'O') {
-              row.push(new GraphItem(node.id, 'P', 0, i, i, null));
-            }
+            row.push(new GraphItem(node.id, 'NULL', 0, null, null, null));
           } else if (node.children === 1) {
-
             row.push(new GraphItem(node.id, 'L', 1, i, i, null));
-
           } else if (node.children > 1) {
             row.push(new GraphItem(node.id, 'L', 1, i, i, null));
             row.push(new GraphItem(node.id, 'L', node.children - 1, i, i, null));
@@ -84,27 +109,9 @@ export class ChangesGraph {
       }
 
       let found = false;
-
-      for (let i = 0; i < row.length; i++) { // по строке
+      for (let i = 0; i < row.length; i++) {
         const node = row[i];
         if (node.id === item.parent) {
-
-
-          //////////// это магия работает как то. хз
-//           if (this.commits[index].parent2) {
-//
-//               console.log(row[i - 1]);
-//               row[i - 1].finishColumn++;
-//               if (row[i - 1].children > 0) {
-//                 row[i - 1].children--;
-//
-//             }
-//               ///////////////
-//             // console.log(this.commits[index]);
-// // 9 должен мержиться в 10
-//
-//           }
-
           node.id = item.id;
           node.type = 'O';
           node.children = Number(item.children);
@@ -112,46 +119,45 @@ export class ChangesGraph {
           found = true;
           break;
         }
-
       }
 
 
-      if (!found) {      // рисуем родителя всех
-        // console.log(item);
+      if (!found) {
         row.push(new GraphItem(item.id, 'O', Number(item.children), null, null, Number(item.parent2)));
       }
+      // correct line, if merge
       for (let i = 0; i < row.length; i++) {
 
+
         if (row[i - 1]) {
-          if (row[i - 1].parent2 && this.commits[row[i].id - 1].id) {
-            // console.log(row[i - 1].parent2, this.commits[row[i].id - 1].id);
-            if (row[i].finishColumn > 0) {
-              row[i].finishColumn--;
+          const currentObject = row[i - 1];
+          if (currentObject.type === 'O') {
+            // merge from right to left
+            for (let k = i - 1; k < row.length; k++) {
+              if (currentObject.parent2 === row[k].id) {
+                row[k].finishColumn = i - 1;
+                if (row[i].children > 0) {
+                  row[i].children = 0;
+                }
+              }
             }
-            if (row[i].children > 0) {
-              row[i].children--;
-            }
-            // console.log(row[i]);
           }
-
-          //
-          //   if (row[i - 1].parent2 &&  this.commits[row[i].id - 1].id) {
-          // if (row[i - 1].parent2, this.commits[row[i - 1].id - 1].parent2) {
-          //   if (row[i - 1].parent2) {
-          console.log(row[i], row[i - 1], this.commits[row[i].id ]);
-          // console.log(row[i - 1],this.commits[row[i - 1].id - 1] );
-          // row[i - 2].finishColumn++;
-          // row[i - 2].children--;
-
-
-          //   }
-          // }
-          // row[i].finishColumn--;
-          // row[i].children--;
-          // console.log(row[i]);
         }
 
-
+        // merge from left to right
+        if (row[i + 1]) {
+          const currentObject = row[i + 1];
+          if (currentObject.type === 'O') {
+            for (let k = i + 1; k > 0; k--) {
+              if (currentObject.parent2 === row[k - 1].id) {
+                row[k - 1].finishColumn = i + 1;
+                if (row[i].children > 0) {
+                  row[i].children = 0;
+                }
+              }
+            }
+          }
+        }
       }
 
 
@@ -191,7 +197,7 @@ export class ChangesGraph {
           y: (i + 0.5) * this.cellHeight
         };
 
-        if (table[i][j].startColumn != null && table[i][j].type !== 'P') {
+        if (table[i][j].startColumn != null && table[i][j].type !== 'NULL') {
 
           const x1 = table[i][j].startColumn * this.cellWidth + this.cellWidth / 2;
           const y1 = cell.y - this.cellHeight;
@@ -226,6 +232,8 @@ export class ChangesGraph {
           });
 
           node.setAttribute('class', 'node');
+          node.setAttribute('id', table[i][j].id);
+          // node.setAttribute('onclick', 'viewTag()');
 
           svg.appendChild(node);
 
@@ -239,5 +247,3 @@ export class ChangesGraph {
     return svg;
   }
 }
-
-

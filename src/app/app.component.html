@@ -1,40 +1,70 @@
-<app-svg-graph *ngIf="commits" [UpdateCommits]="commits" > </app-svg-graph>
+<link rel="stylesheet" href="app.component.css">
+<div class="app">
+  <app-svg-graph class="graph" *ngIf="commits && tags" [inputCommits]="commits" [inputTags]="tags"></app-svg-graph>
 
-<mat-card class="btns">
+  <mat-card class="controls ">
+    <section class="controls-section">
+      <h1 class="controls-section__header"> Commits</h1>
+      <div class="controls-line">
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Current commit</mat-label>
+          <mat-select [(ngModel)]="newCommit.parent">
+            <mat-option *ngFor="let parent of allId" [value]="parent">  {{parent}}
+            </mat-option>
 
-  <button mat-button (click)="add()">Add commit</button>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="controls-line">
+        <button mat-button (click)="addCommit()">Add</button>
 
-  <mat-form-field appearance="fill">
-    <mat-label>text commit</mat-label>
-    <input matInput [(ngModel)]="newCommit.text">
-  </mat-form-field>
-  <mat-form-field appearance="fill">
-    <mat-label>CURRENT COMMIT</mat-label>
-    <mat-select [(ngModel)]="newCommit.parent">
-      <mat-option *ngFor="let parent of allId"  [value]="parent">  {{parent}}
-      </mat-option>
-
-    </mat-select>
-  </mat-form-field>
-
-
-
-
-
-  <hr>
-  <!--  merge-->
-  <button mat-button (click)="merge()">Merge</button>
-
-  <mat-form-field appearance="fill">
-    <mat-label>Merge FROM</mat-label>
-    <mat-select [(ngModel)]="newCommit.parent2">
-      <mat-option *ngFor="let parent of allId"  [value]="parent">  {{parent}}
-      </mat-option>
-
-    </mat-select>
-  </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Text</mat-label>
+          <input matInput [(ngModel)]="newCommit.text">
+        </mat-form-field>
+      </div>
 
 
+      <!--  merge-->
+      <div class="controls-line">
+        <button mat-button (click)="merge()">Merge</button>
 
-</mat-card>
+        <mat-form-field appearance="fill">
+          <mat-label>Merge FROM</mat-label>
+          <mat-select [(ngModel)]="newCommit.parent2">
+            <mat-option *ngFor="let parent of allId" [value]="parent">  {{parent}}
+            </mat-option>
+
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </section>
+    <section class="controls-section controls-section--border-top">
+      <h1 class="controls-section__header">Tags</h1>
+      <div class="controls-line ">
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Current commit</mat-label>
+          <mat-select [(ngModel)]="newTag.commit">
+            <mat-option *ngFor="let parent of allId" [value]="parent">  {{parent}}
+            </mat-option>
+
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="controls-line">
+        <button mat-button (click)="addTag()">Add </button>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Text</mat-label>
+          <input matInput [(ngModel)]="newTag.tag">
+        </mat-form-field>
+      </div>
+
+    </section>
+
+
+  </mat-card>
+</div>
+
 
