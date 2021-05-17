@@ -12,7 +12,6 @@ export class Commit implements Deserializable {
   constructor() {
   }
 
-
   deserialize(input: any): any {
     Object.assign(this, input);
     return this;

@@ -1,4 +1,6 @@
-<ul id="changes-graph">
-  <li *ngFor="let item of this.commits">{{item.text}} | {{item.id}}</li>
+<ul id="changes-graph" class="changes-graph">
+  <li *ngFor="let item of this.commits" class="changes-graph__item">{{item.text}} | {{item.id}} <span
+    *ngIf="tags.get(item.id)" class="changes-graph__tag">{{tags.get((item.id))}} </span></li>
 </ul>
+
 

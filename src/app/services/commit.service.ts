@@ -27,7 +27,7 @@ export class CommitService {
     return this.httpClient.post(tagsURL, tag);
   }
 
-  getCommits(): Observable<any> {
+  getCommits(): Observable<Commit[]> {
     return this.httpClient.get<Commit[]>(commitsURL)
       .pipe(map(res => {
         const commits = [];
@@ -37,11 +37,10 @@ export class CommitService {
 
   }
 
-  getTags(): Observable<any> {
+  getTags(): Observable<Tag[]> {
     return this.httpClient.get<Tag[]>(tagsURL)
       .pipe(map(
         res => {
-
           const tags = [];
           res.forEach(i => tags.push(new Tag().deserialize(i)));
           return tags;

@@ -33,10 +33,18 @@ export class AppComponent implements OnInit {
 
   getCommits(): void {
     this.commitService.getCommits().subscribe(res => {
-      this.commits = res;
-      this.allId = [];
-      res.forEach(item => this.allId.push(item.id));
-    });
+        this.commits = res;
+        this.allId = [];
+        res.forEach(item => this.allId.push(item.id));
+      },
+      error => {
+        console.log(error);
+        alert('The server doesn\'t seem to be working. Please start the server:' +
+          'npm i json-server' +
+          'json-server info.json'
+        );
+        this.ngOnInit();
+      });
     this.newCommit = new Commit();
 
   }
@@ -57,8 +65,12 @@ export class AppComponent implements OnInit {
     } else {
       this.newCommit.time = new Date().toISOString();
       this.newCommit.id = this.commits.length + 1;
-      this.commitService.sendCommit(this.newCommit).subscribe(() => {
+      this.commitService.sendCommit(this.newCommit).subscribe((r) => {
+        console.log(r);
         this.getCommits();
+      }, (error) => {
+        alert('Something went wrong. This commit was not sent.');
+        console.log(error);
       });
     }
 
@@ -73,9 +85,13 @@ export class AppComponent implements OnInit {
     } else {
       this.newCommit.time = new Date().toISOString();
       this.newCommit.id = this.commits.length + 1;
-      this.commitService.sendCommit(this.newCommit).subscribe(r => {
-        this.getCommits();
-      });
+      this.commitService.sendCommit(this.newCommit).subscribe(() => {
+          this.getCommits();
+        },
+        error => {
+          alert('Something went wrong. MR didn\'t work');
+          console.log(error);
+        });
     }
   }
 
@@ -84,7 +100,13 @@ export class AppComponent implements OnInit {
       alert('Choose commit');
       return;
     }
-    this.commitService.sendTag(this.newTag).subscribe(() => this.getTags());
+    this.commitService.sendTag(this.newTag).subscribe(() => {
+        this.getTags();
+      },
+      error => {
+        alert('Something went wrong. This tag was not sent.');
+        console.log(error);
+      });
 
 
   }

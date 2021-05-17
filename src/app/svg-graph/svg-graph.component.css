@@ -8,12 +8,10 @@ li {
   list-style-type: none;
 }
 
-
-
-.btns {
-  background: #fafafa;
-
-}
-.merge{
-  border: 1px;
+.changes-graph__item{}
+.changes-graph__tag{
+  border-radius: 25px;
+  padding: 4px;
+  margin-left: 20px;
+  border: 2px solid green;
 }

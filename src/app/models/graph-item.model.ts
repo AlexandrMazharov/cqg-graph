@@ -1,8 +1,8 @@
 export class GraphItem {
-  // элемент графа. Бывает трех типов
-  // NULL -пусто
+  // graph item is a node of graph table
+  // NULL  - empty cell
   // L - line
-  // O - object те узел
+  // O - object = node
   public id: string;
   public type: string;
   public children: number;
