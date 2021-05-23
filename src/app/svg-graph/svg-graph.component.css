@@ -7,11 +7,25 @@ li {
   margin-left: 250px;
   list-style-type: none;
 }
+.changes-graph{
 
+}
 .changes-graph__item{}
 .changes-graph__tag{
   border-radius: 25px;
   padding: 4px;
   margin-left: 20px;
   border: 2px solid green;
+}
+.window{
+  position: absolute;
+  z-index: 999;
+  transition: .3s;
+  padding: 12px;
+  border: 1px solid green;
+  border-radius: 12px;
+  background: #fafafa;
+
+
+
 }

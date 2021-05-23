@@ -3,12 +3,19 @@ import {Commit} from '../models/commit.model';
 import {GraphItem} from '../models/graph-item.model';
 import {Tag} from '../models/tag.model';
 
+interface Position {
+  screenX: number;
+  screenY: number;
+
+}
+
 @Component({
   selector: 'app-svg-graph',
   templateUrl: './svg-graph.component.html',
   styleUrls: ['./svg-graph.component.css']
 })
 export class SvgGraphComponent {
+
 
   tags = new Map<string, string>();
   public commits: Commit[];
@@ -27,13 +34,16 @@ export class SvgGraphComponent {
 
   }
 
+  public mouseOwerItem: Commit;
   private readonly cellHeight: any;
   private readonly cellWidth: any;
   private element: HTMLElement;
+  popupPosition: Position;
 
   constructor() {
     this.cellWidth = 32;
     this.cellHeight = 32;
+    this.popupPosition = {screenX: 0, screenY: 0};
   }
 
   rerender(): void {
@@ -48,13 +58,11 @@ export class SvgGraphComponent {
     const svg = this.buildSVG(this.getViewTable());
     wrapper.appendChild(svg);
     const nodes = Array.from(document.querySelectorAll('svg .node'));
+    nodes.forEach(node => node.addEventListener('mouseover', this.mouseoverNode.bind(this)));
 
-    nodes.forEach((el) => el.addEventListener('click', this.clickedByNode));
+
   }
 
-  clickedByNode(e): void {
-    console.log(e.target.id);
-  }
 
   calcChildrenCount(): void {
     const items = this.commits;
@@ -215,6 +223,7 @@ export class SvgGraphComponent {
           node.setAttribute('class', 'node');
           node.setAttribute('id', table[i][j].id);
 
+
           svg.appendChild(node);
         }
       }
@@ -225,4 +234,13 @@ export class SvgGraphComponent {
 
     return svg;
   }
+
+  mouseoverNode(e): void {
+    this.popupPosition.screenX = e.screenX - 1500;
+    this.popupPosition.screenY = e.screenY;
+    this.mouseOwerItem = this.commits[e.target.id - 1];
+  }
+
+  dateParse = (date: string) => date.split(' ').join('');
+
 }

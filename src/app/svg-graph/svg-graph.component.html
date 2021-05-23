@@ -1,6 +1,11 @@
 <ul id="changes-graph" class="changes-graph">
   <li *ngFor="let item of this.commits" class="changes-graph__item">{{item.text}} | {{item.id}} <span
     *ngIf="tags.get(item.id)" class="changes-graph__tag">{{tags.get((item.id))}} </span></li>
+  <div class="window" *ngIf="mouseOwerItem" [ngStyle]="{'top': popupPosition.screenY+ 'px', 'left': popupPosition.screenX+ 'px'}">
+    <p>id: {{mouseOwerItem.id}}</p>
+    <p>Date: {{dateParse(mouseOwerItem.time)}}</p>
+    <p>Text: {{mouseOwerItem.text}}</p>
+  </div>
 </ul>
 
 
