@@ -1,5 +1,5 @@
 ul {
-  margin-left: 100px
+  margin: 0 auto;
 }
 
 li {
@@ -25,7 +25,4 @@ li {
   border: 1px solid green;
   border-radius: 12px;
   background: #fafafa;
-
-
-
 }

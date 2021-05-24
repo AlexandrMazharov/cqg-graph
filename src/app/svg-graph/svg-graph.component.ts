@@ -6,7 +6,6 @@ import {Tag} from '../models/tag.model';
 interface Position {
   screenX: number;
   screenY: number;
-
 }
 
 @Component({
@@ -57,9 +56,9 @@ export class SvgGraphComponent {
     this.element.insertBefore(wrapper, this.element.firstChild);
     const svg = this.buildSVG(this.getViewTable());
     wrapper.appendChild(svg);
+
     const nodes = Array.from(document.querySelectorAll('svg .node'));
     nodes.forEach(node => node.addEventListener('mouseover', this.mouseoverNode.bind(this)));
-
 
   }
 

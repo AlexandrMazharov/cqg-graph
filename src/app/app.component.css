@@ -1,5 +1,5 @@
 
-.app{
+.app {
   display: flex;
   justify-content: space-between;
   margin: 0 auto;
@@ -8,27 +8,22 @@
   padding: 12px;
   height: calc(100vh - 24px);
 }
-.graph{
 
+.graph {
+  flex-grow: 2;
 }
-.controls{
 
+.controls-section--border-top {
+  padding-top: 12px;
+  border-top: 1px solid black;
 }
-.controls-section{
 
-}
-.controls-section{}
-.controls-section--border-top{
-   padding-top: 12px;
-   border-top: 1px solid black;
- }
-
-.controls-line{
+.controls-line {
   display: flex;
   justify-content: space-around;
   align-items: center;
 }
 
-.full-width{
+.full-width {
   width: 100%;
 }

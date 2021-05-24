@@ -21,8 +21,6 @@ export class AppComponent implements OnInit {
 
 
   constructor(private commitService: CommitService) {
-
-
   }
 
   ngOnInit(): void {
